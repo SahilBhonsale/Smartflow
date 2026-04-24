@@ -1,4 +1,4 @@
-# SmartFlow ⚡
+# SmartFlow 
 
 > AI-powered task and note manager for modern teams and individuals.
 
@@ -11,13 +11,13 @@
 
 ---
 
-## 🚀 Live Demo
+## Live Demo
 
 > Coming soon — [https://smartflow.vercel.app](https://smartflow.vercel.app)
 
 ---
 
-## ✨ Features
+## Features
 
 - ✅ **Kanban Board** — Drag-and-drop task management with multiple boards
 - ✅ **Rich Text Notes** — Tiptap-powered editor with formatting toolbar
@@ -36,13 +36,13 @@
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 > Screenshots coming soon
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Category | Technology |
 |----------|-----------|
@@ -62,7 +62,7 @@
 
 ---
 
-## 📁 Folder Structure
+## Folder Structure
 
 ```
 smartflow/
@@ -104,7 +104,7 @@ smartflow/
 
 ---
 
-## 🏁 Local Setup
+## Local Setup
 
 ### Prerequisites
 
@@ -160,7 +160,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 📡 API Documentation
+## API Documentation
 
 ### Auth
 | Method | Endpoint | Description |
@@ -202,7 +202,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -212,7 +212,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
