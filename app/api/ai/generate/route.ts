@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { anthropic } from "@/lib/claude";
+import { gemini } from "@/lib/gemini";
 import { z } from "zod";
 
 const generateSchema = z.object({
@@ -42,35 +42,31 @@ export async function POST(req: Request) {
 
     const { prompt, type, history } = parsed.data;
 
-    // Build message history for context
-    const messages = [
+    // Build message history for context, mapped to Gemini roles
+    const geminiMessages = [
       ...history.map((msg) => ({
-        role: msg.role as "user" | "assistant",
-        content: msg.content,
+        role: msg.role === "assistant" ? "model" : "user",
+        parts: [{ text: msg.content }],
       })),
-      { role: "user" as const, content: prompt },
+      { role: "user", parts: [{ text: prompt }] },
     ];
 
     // Use streaming response
-    const stream = await anthropic.messages.stream({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 2048,
-      system: systemPrompts[type],
-      messages,
+    const stream = await gemini.models.generateContentStream({
+      model: "gemini-2.5-flash",
+      contents: geminiMessages,
+      config: {
+        systemInstruction: systemPrompts[type],
+      }
     });
 
-    // Create a ReadableStream that pipes Claude's streamed text
+    // Create a ReadableStream that pipes Gemini's streamed text
     const readableStream = new ReadableStream({
       async start(controller) {
         try {
-          for await (const event of stream) {
-            if (
-              event.type === "content_block_delta" &&
-              event.delta.type === "text_delta"
-            ) {
-              controller.enqueue(
-                new TextEncoder().encode(event.delta.text)
-              );
+          for await (const chunk of stream) {
+            if (chunk.text) {
+              controller.enqueue(new TextEncoder().encode(chunk.text));
             }
           }
           controller.close();

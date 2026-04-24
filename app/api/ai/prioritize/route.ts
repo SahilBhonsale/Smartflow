@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { anthropic } from "@/lib/claude";
+import { gemini } from "@/lib/gemini";
 import { z } from "zod";
 
 const prioritizeSchema = z.object({
@@ -56,13 +56,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 2048,
-      messages: [
-        {
-          role: "user",
-          content: `You are a productivity coach. Given these tasks with their priorities and due dates, return a prioritized list with reasoning for each task. Return ONLY valid JSON in this exact format:
+    const response = await gemini.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `You are a productivity coach. Given these tasks with their priorities and due dates, return a prioritized list with reasoning for each task. Return ONLY valid JSON in this exact format:
 {
   "prioritizedTasks": [
     {
@@ -74,19 +70,17 @@ export async function POST(req: Request) {
 }
 
 Tasks: ${JSON.stringify(allTasks)}`,
-        },
-      ],
     });
 
-    const textBlock = response.content.find((block) => block.type === "text");
-    if (!textBlock) {
+    const text = response.text;
+    if (!text) {
       return NextResponse.json({ error: "Failed to get AI response" }, { status: 500 });
     }
 
     try {
       // Extract JSON from response (handles potential markdown wrapping)
-      const jsonMatch = textBlock.text.match(/\{[\s\S]*\}/);
-      const parsed2 = JSON.parse(jsonMatch ? jsonMatch[0] : textBlock.text);
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const parsed2 = JSON.parse(jsonMatch ? jsonMatch[0] : text);
       return NextResponse.json(parsed2);
     } catch {
       return NextResponse.json({ error: "Failed to parse AI response" }, { status: 500 });

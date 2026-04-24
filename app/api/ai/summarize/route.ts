@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { anthropic, stripToPlainText } from "@/lib/claude";
+import { gemini, stripToPlainText } from "@/lib/gemini";
 import { z } from "zod";
 
 const summarizeSchema = z.object({
@@ -37,19 +37,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1024,
-      messages: [
-        {
-          role: "user",
-          content: `Summarize the following note in 3-5 bullet points, keeping it concise and actionable:\n\n${plainText}`,
-        },
-      ],
+    const response = await gemini.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `Summarize the following note in 3-5 bullet points, keeping it concise and actionable:\n\n${plainText}`,
     });
 
-    const textBlock = response.content.find((block) => block.type === "text");
-    const summary = textBlock ? textBlock.text : "Unable to generate summary";
+    const summary = response.text || "Unable to generate summary";
 
     return NextResponse.json({ summary });
   } catch (error) {

@@ -1,10 +1,10 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenAI } from "@google/genai";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
+const gemini = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY || "dummy-key-for-build",
 });
 
-export { anthropic };
+export { gemini };
 
 /** Strip HTML/JSON to plain text for AI processing */
 export function stripToPlainText(content: string): string {
