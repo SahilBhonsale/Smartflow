@@ -23,12 +23,11 @@ import {
   Bot
 } from "lucide-react";
 import Link from "next/link";
-import { DashboardStats, TaskType, NoteType } from "@/types";
+import { DashboardStats, TaskType } from "@/types";
 
 export default function DashboardPage() {
   const { data: session } = useSession();
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [recentTasks, setRecentTasks] = useState<TaskType[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -70,15 +69,6 @@ export default function DashboardPage() {
           tasksDueToday: tasksDueToday.length,
         });
 
-        setRecentTasks(
-          allTasks
-            .sort(
-              (a, b) =>
-                new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime()
-            )
-            .slice(0, 5)
-        );
       } catch (error) {
         console.error("Dashboard load error:", error);
       } finally {
